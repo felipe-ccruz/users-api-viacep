@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { UsersUseCase } from "./users.usecase";
+import { CreateUserBodySchema, UpdateUserBodySchema } from "./users.types";
 
 // Plugin Elysia com todas as rotas do módulo de usuários
 export const usersController = new Elysia({ prefix: "/users" })
@@ -19,27 +20,21 @@ export const usersController = new Elysia({ prefix: "/users" })
             return { error: "CEP inválido" };
           }
         }
-        // Erro inesperado
+        // Loga o erro inesperado no terminal para facilitar o diagnóstico
+        console.error("[POST /users]", error);
         set.status = 500;
         return { error: "Erro interno do servidor" };
       }
     },
-    {
-      body: t.Object({
-        firstName: t.String(),
-        lastName: t.String(),
-        age: t.Number(),
-        gender: t.String(),
-        cep: t.String(),
-      }),
-    }
+    { body: CreateUserBodySchema }
   )
 
   // GET /users — lista todos os usuários
   .get("/", async ({ set }) => {
     try {
       return await UsersUseCase.getAllUsers();
-    } catch {
+    } catch (error) {
+      console.error("[GET /users]", error);
       set.status = 500;
       return { error: "Erro interno do servidor" };
     }
@@ -58,15 +53,12 @@ export const usersController = new Elysia({ prefix: "/users" })
             return { error: "Usuário não encontrado" };
           }
         }
+        console.error("[GET /users/:id]", error);
         set.status = 500;
         return { error: "Erro interno do servidor" };
       }
     },
-    {
-      params: t.Object({
-        id: t.String(),
-      }),
-    }
+    { params: t.Object({ id: t.String() }) }
   )
 
   // PUT /users/:id — atualiza um usuário existente
@@ -86,21 +78,14 @@ export const usersController = new Elysia({ prefix: "/users" })
             return { error: "CEP inválido" };
           }
         }
+        console.error("[PUT /users/:id]", error);
         set.status = 500;
         return { error: "Erro interno do servidor" };
       }
     },
     {
-      params: t.Object({
-        id: t.String(),
-      }),
-      body: t.Object({
-        firstName: t.Optional(t.String()),
-        lastName: t.Optional(t.String()),
-        age: t.Optional(t.Number()),
-        gender: t.Optional(t.String()),
-        cep: t.Optional(t.String()),
-      }),
+      params: t.Object({ id: t.String() }),
+      body: UpdateUserBodySchema,
     }
   )
 
@@ -117,13 +102,10 @@ export const usersController = new Elysia({ prefix: "/users" })
             return { error: "Usuário não encontrado" };
           }
         }
+        console.error("[DELETE /users/:id]", error);
         set.status = 500;
         return { error: "Erro interno do servidor" };
       }
     },
-    {
-      params: t.Object({
-        id: t.String(),
-      }),
-    }
+    { params: t.Object({ id: t.String() }) }
   );

@@ -1,6 +1,6 @@
 import { ViaCepService } from "../../external/viacep.service";
 import { UsersRepository } from "./users.repository";
-import type { CreateUserBody, UserResponse } from "./users.types";
+import type { CreateUserBody, UpdateUserBody, UserResponse } from "./users.types";
 
 // Formata um registro do banco para o padrão de resposta da API
 function formatUser(user: {
@@ -80,7 +80,7 @@ export const UsersUseCase = {
   // Atualiza os campos enviados do usuário, validando o CEP se alterado
   async updateUser(
     id: number,
-    body: Partial<CreateUserBody>
+    body: UpdateUserBody
   ): Promise<UserResponse> {
     const existing = await UsersRepository.findById(id);
 

@@ -22,4 +22,4 @@ const app = new Elysia()
   // Sobe o servidor na porta 3000
   .listen(3000);
 
-console.log("Servidor rodando em http://localhost:3000");
+console.log("\n\n🎎 Servidor rodando em http://localhost:3000/docs\n\n");
