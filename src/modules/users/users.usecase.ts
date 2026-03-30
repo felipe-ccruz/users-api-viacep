@@ -43,16 +43,21 @@ export const UsersUseCase = {
     }
 
     const created = await UsersRepository.create({
-      first_name: body.firstName,
-      last_name: body.lastName,
-      age: body.age,
-      gender: body.gender,
-      cep: address.cep,
-      city: address.city,
-      state: address.state,
-    });
+    first_name: body.firstName,
+    last_name: body.lastName,
+    age: body.age,
+    gender: body.gender,
+    cep: address.cep,
+    city: address.city,
+    state: address.state,
+  });
 
-    return formatUser(created);
+  // Guarda: garante que o registro foi criado antes de formatar
+  if (!created) {
+    throw new Error("Erro ao criar usuário");
+  }
+
+  return formatUser(created);
   },
 
   // Retorna todos os usuários formatados
@@ -115,6 +120,12 @@ export const UsersUseCase = {
     }
 
     const updated = await UsersRepository.update(id, updateData);
+
+    // Guarda: garante que o registro foi atualizado antes de formatar
+    if (!updated) {
+      throw new Error("Erro ao atualizar usuário");
+    }
+
     return formatUser(updated);
   },
 
